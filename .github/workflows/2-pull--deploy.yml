@@ -1,0 +1,55 @@
+name: pull--deploy
+
+on:
+  # Run workflow anytime the pull--build workflow completes for the main branch.
+  workflow_run:
+    workflows: pull--build
+    types: completed
+    branches: main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      workflowRunId:
+        description: 'The build workflow run ID containing the artifacts to use. The run ID can be found in the URL of the build workflow run.'
+        type: number
+        required: true
+
+env:
+  artifactName: buildArtifact # This must match the artifact name in the pull--build workflow.
+  # Ternary operator to use input value if manually triggered, otherwise use the workflow_run.id of the workflow run that triggered this one.
+  workflowRunId: ${{ github.event_name == 'workflow_dispatch' && inputs.workflowRunId || github.event.workflow_run.id }}
+
+jobs:
+  deploy-to-staging:
+    # Only run the deployment if manually triggered, or the build workflow succeeded.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      # Must use a 3rd party action to download artifacts from other workflows.
+      - name: Download prerelease module artifact from triggered workflow
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          run_id: ${{ env.workflowRunId }}
+          name: ${{ env.artifactName}}
+          path: ./buildArtifact
+          search_artifacts: true
+
+      # Steps to deploy the code go here.
+
+  deploy-to-production:
+    # Only run this deploy job after the deploy-to-staging job completes successfully.
+    needs: deploy-to-staging
+    runs-on: ubuntu-latest
+    environment: production # Used for environment-specific variables, secrets, and approvals.
+    steps:
+      # Must use a 3rd party action to download artifacts from other workflows.
+      - name: Download prerelease module artifact from triggered workflow
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          run_id: ${{ env.workflowRunId }}
+          name: ${{ env.artifactName}}
+          path: ./buildArtifact
+          search_artifacts: true
+
+      # Steps to deploy the code go here.

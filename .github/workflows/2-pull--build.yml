@@ -1,0 +1,29 @@
+name: pull--build
+
+on:
+  pull_request:
+    branches: main # Run workflow on PRs to the main branch.
+
+  # Run workflow on pushes any branch.
+  push:
+
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+
+env:
+  artifactName: buildArtifact
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo source code
+        uses: actions/checkout@v3
+
+      # Steps to version, build, and test the code go here.
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.artifactName }}
+          path: ./ # Put the path to the build artifact files directory here.
