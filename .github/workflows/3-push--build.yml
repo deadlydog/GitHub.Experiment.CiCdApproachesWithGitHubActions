@@ -41,4 +41,5 @@ jobs:
     # 👇 Only trigger a deployment if the deploy parameter was set, or this build is for a push (not a PR) on the default branch (main).
     if: inputs.deploy || (github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch))
     uses: ./.github/workflows/3-push--deploy.yml
+    # 👇 Allow the deployment workflow to access the secrets of this workflow.
     secrets: inherit

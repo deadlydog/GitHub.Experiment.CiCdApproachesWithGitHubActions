@@ -32,8 +32,7 @@ jobs:
     # 👇 Only run this deploy job after the build-and-test job completes successfully.
     needs: build-and-test
     runs-on: ubuntu-latest
-    environment: staging # Used for environment-specific variables, secrets, and approvals.
-    # 👇 Only deploy on pushes or manual triggers (not on PRs though) to the main branch.
+    # 👇 Only run on pushes (not PRs) or manual triggers to the main branch.
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     steps:
       - name: Download artifact

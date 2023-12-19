@@ -2,6 +2,7 @@ name: pull--deploy
 
 on:
   # 👇 Run workflow anytime the pull--build workflow completes for the main branch.
+  # Unfortunately, can not have it only run on successful builds, so it will run when builds fail too.
   workflow_run:
     workflows: pull--build
     types: completed
@@ -10,6 +11,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab.
   workflow_dispatch:
     inputs:
+      # 👇 Must specify the build artifacts to deploy when running manually.
       workflowRunId:
         description: 'The build workflow run ID containing the artifacts to use. The run ID can be found in the URL of the build workflow run.'
         type: number
@@ -22,12 +24,12 @@ env:
 
 jobs:
   deploy-to-staging:
-    # 👇 Only run the deployment if manually triggered, or the build workflow succeeded.
+    # 👇 Only run the deployment if manually triggered, or the build workflow that triggered this succeeded.
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       # 👇 Must use a 3rd party action to download artifacts from other workflows.
-      - name: Download prerelease module artifact from triggered workflow
+      - name: Download artifact from triggered workflow
         uses: dawidd6/action-download-artifact@v2
         with:
           run_id: ${{ env.workflowRunId }}
@@ -44,7 +46,7 @@ jobs:
     environment: production # Used for environment-specific variables, secrets, and approvals.
     steps:
       # Must use a 3rd party action to download artifacts from other workflows.
-      - name: Download prerelease module artifact from triggered workflow
+      - name: Download artifact from triggered workflow
         uses: dawidd6/action-download-artifact@v2
         with:
           run_id: ${{ env.workflowRunId }}
