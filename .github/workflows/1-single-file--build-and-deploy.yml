@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: main # Run workflow on PRs to the main branch.
 
-  # Run workflow on pushes any branch.
+  # Run workflow on pushes to any branch.
   push:
 
   # Allows you to run this workflow manually from the Actions tab.
@@ -29,11 +29,11 @@ jobs:
           path: ./ # Put the path to the build artifact files directory here.
 
   deploy-to-staging:
-    # Only run this deploy job after the build-and-test job completes successfully.
+    # 👇 Only run this deploy job after the build-and-test job completes successfully.
     needs: build-and-test
     runs-on: ubuntu-latest
     environment: staging # Used for environment-specific variables, secrets, and approvals.
-    # Only deploy on pushes or manual triggers (not on PRs though) to the main branch.
+    # 👇 Only deploy on pushes or manual triggers (not on PRs though) to the main branch.
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     steps:
       - name: Download artifact
@@ -45,7 +45,7 @@ jobs:
       # Steps to deploy the code go here.
 
   deploy-to-production:
-    # Only run this deploy job after the deploy-to-staging job completes successfully.
+    # 👇 Only run this deploy job after the deploy-to-staging job completes successfully.
     needs: deploy-to-staging
     runs-on: ubuntu-latest
     environment: production # Used for environment-specific variables, secrets, and approvals.
