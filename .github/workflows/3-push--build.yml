@@ -1,0 +1,44 @@
+name: push--build
+
+on:
+  pull_request:
+    branches: main # Run workflow on PRs to the main branch.
+
+  # Run workflow on pushes to any branch.
+  push:
+
+  # Allows you to run this workflow manually from the Actions tab.
+  workflow_dispatch:
+    inputs:
+      # 👇 Allow deploying non-main branch builds.
+      deploy:
+        description: 'Deploy the build artifacts. Only has effect when not building the main branch.'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  artifactName: buildArtifact
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo source code
+        uses: actions/checkout@v3
+
+      # Steps to version, build, and test the code go here.
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.artifactName }}
+          path: ./ # Put the path to the build artifact files directory here.
+
+  # 👇 Trigger the deployment workflow.
+  trigger-deployment:
+    needs: build-and-test
+    # 👇 Only trigger a deployment if the deploy parameter was set, or this build is for a push (not a PR) on the default branch (main).
+    if: inputs.deploy || (github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch))
+    uses: ./.github/workflows/3-push--deploy.yml
+    secrets: inherit

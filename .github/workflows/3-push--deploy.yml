@@ -1,0 +1,35 @@
+name: push--deploy
+
+on:
+  # 👇 Allow this workflow to be called by the push--build workflow.
+  workflow_call:
+
+env:
+  artifactName: buildArtifact # This must match the artifact name in the push--build workflow.
+
+jobs:
+  deploy-to-staging:
+    runs-on: ubuntu-latest
+    steps:
+      # 👇 Can use the native download-artifact action.
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.artifactName }}
+          path: ./buildArtifact
+
+      # Steps to deploy the code go here.
+
+  deploy-to-production:
+    # Only run this deploy job after the deploy-to-staging job completes successfully.
+    needs: deploy-to-staging
+    runs-on: ubuntu-latest
+    environment: production # Used for environment-specific variables, secrets, and approvals.
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.artifactName }}
+          path: ./buildArtifact
+
+      # Steps to deploy the code go here.
