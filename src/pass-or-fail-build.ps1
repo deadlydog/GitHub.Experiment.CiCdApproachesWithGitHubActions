@@ -8,3 +8,5 @@ if ($buildShouldSucceed -eq $false) {
 	throw "Build failed."
 }
 Write-Output "Build succeeded."
+
+# dummy change to trigger a build
