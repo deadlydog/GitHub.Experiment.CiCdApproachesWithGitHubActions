@@ -1,0 +1,45 @@
+name: include--deploy
+
+on:
+  # 👇 Trigger the workflow on a push to the main branch.
+  push:
+    branches: main
+
+  # 👇 Allows you to run this workflow manually (for any branch) from the Actions tab.
+  workflow_dispatch:
+
+env:
+  artifactName: buildArtifact # This must match the artifact name in the push--build workflow.
+
+jobs:
+  # 👇 Call the build workflow to create the artifacts to deploy.
+  build-and-test:
+    uses: ./.github/workflows/4-include--build.yml
+    secrets: inherit # Inherit secrets from the parent workflow, if necessary.
+
+  deploy-to-staging:
+    # 👇 Only run this deploy job after the build-and-test job completes successfully.
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.artifactName }}
+          path: ./buildArtifact
+
+      # Steps to deploy the code go here.
+
+  deploy-to-production:
+    # Only run this deploy job after the deploy-to-staging job completes successfully.
+    needs: deploy-to-staging
+    runs-on: ubuntu-latest
+    environment: production # Used for environment-specific variables, secrets, and approvals.
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.artifactName }}
+          path: ./buildArtifact
+
+      # Steps to deploy the code go here.
