@@ -17,7 +17,7 @@ jobs:
   build-and-test:
     uses: ./.github/workflows/5-include-with-deploy-template--build.yml
     with:
-      artifactName: ${{ env.artifactName }}
+      artifactName: ${{ github.env.artifactName }}
     secrets: inherit # Pass secrets to the build workflow, if necessary.
 
   deploy-to-staging:
@@ -26,7 +26,7 @@ jobs:
     # 👇 Call the deploy template with the proper environemnt name to deploy the artifacts.
     uses: ./.github/workflows/5-include-with-deploy-template--deploy-template.yml
     with:
-      artifactName: ${{ env.artifactName }}
+      artifactName: ${{ github.env.artifactName }}
       environmentName: staging
     secrets: inherit # Pass repository secrets to the deployment workflow.
 
@@ -36,6 +36,6 @@ jobs:
     # 👇 Call the deploy template with the proper environemnt name to deploy the artifacts.
     uses: ./.github/workflows/5-include-with-deploy-template--deploy-template.yml
     with:
-      artifactName: ${{ env.artifactName }}
+      artifactName: ${{ github.env.artifactName }}
       environmentName: production
     secrets: inherit # Pass repository secrets to the deployment workflow.
