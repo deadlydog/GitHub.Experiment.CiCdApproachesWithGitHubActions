@@ -27,7 +27,7 @@ jobs:
         run: ./src/pass-or-fail-build.ps1
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.artifactName }}
           path: ./ # Put the path to the build artifact files directory here.
@@ -40,7 +40,7 @@ jobs:
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.artifactName }}
           path: ./buildArtifact
@@ -54,7 +54,7 @@ jobs:
     environment: production # Used for environment-specific variables, secrets, and approvals.
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.artifactName }}
           path: ./buildArtifact

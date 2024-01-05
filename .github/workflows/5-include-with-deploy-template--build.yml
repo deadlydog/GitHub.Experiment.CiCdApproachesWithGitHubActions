@@ -37,7 +37,7 @@ jobs:
         run: ./src/pass-or-fail-build.ps1
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.artifactName }}
           path: ./ # Put the path to the build artifact files directory here.
