@@ -1,10 +1,10 @@
-name: pull--deploy
+name: 2-pull--deploy
 
 on:
-  # 👇 Run workflow anytime the pull--build workflow completes for the main branch.
+  # 👇 Run workflow anytime the 2-pull--build workflow completes for the main branch.
   # Unfortunately, can not have it only run on successful builds, so it will run when builds fail too.
   workflow_run:
-    workflows: pull--build
+    workflows: 2-pull--build
     types: completed
     branches: main
 
@@ -18,7 +18,7 @@ on:
         required: true
 
 env:
-  artifactName: buildArtifact # This must match the artifact name in the pull--build workflow.
+  artifactName: buildArtifact # This must match the artifact name in the 2-pull--build workflow.
   # 👇 Ternary operator to use input value if manually triggered, otherwise use the workflow_run.id of the workflow run that triggered this one.
   workflowRunId: ${{ github.event_name == 'workflow_dispatch' && inputs.workflowRunId || github.event.workflow_run.id }}
 

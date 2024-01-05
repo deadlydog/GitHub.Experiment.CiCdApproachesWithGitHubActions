@@ -1,4 +1,4 @@
-name: single-file--build-and-deploy
+name: 1-single-file--build-and-deploy
 
 on:
   pull_request:

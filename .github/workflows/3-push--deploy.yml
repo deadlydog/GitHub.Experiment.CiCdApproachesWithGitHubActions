@@ -1,11 +1,11 @@
-name: push--deploy
+name: 3-push--deploy
 
 on:
-  # 👇 Allow this workflow to be called by the push--build workflow.
+  # 👇 Allow this workflow to be called by the 3-push--build workflow.
   workflow_call:
 
 env:
-  artifactName: buildArtifact # This must match the artifact name in the push--build workflow.
+  artifactName: buildArtifact # This must match the artifact name in the 3-push--build workflow.
 
 jobs:
   deploy-to-staging:

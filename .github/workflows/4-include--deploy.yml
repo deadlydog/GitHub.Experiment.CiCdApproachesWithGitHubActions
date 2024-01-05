@@ -1,4 +1,4 @@
-name: include--deploy
+name: 4-include--deploy
 
 on:
   # 👇 Trigger the workflow on a push to the main branch.
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  artifactName: buildArtifact # This must match the artifact name in the push--build workflow.
+  artifactName: buildArtifact # This must match the artifact name in the 3-push--build workflow.
 
 jobs:
   # 👇 Call the build workflow to create the artifacts to deploy.
