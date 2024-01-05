@@ -1,0 +1,28 @@
+name: 5-include-with-deploy-template--deploy-template
+
+on:
+  # 👇 Allows this workflow to be called from the deployment workflow, but the parameters must be provided.
+  workflow_call:
+    inputs:
+      artifactName:
+        description: The name of the artifact to download and deploy.
+        required: true
+        type: string
+      environmentName:
+        description: The name of the environment to deploy to.
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # 👇 Allows using variables and secrets defined in the provided environment.
+    environment: ${{ inputs.environmentName }}
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ inputs.artifactName }}
+          path: ./buildArtifact
+
+      # Steps to deploy the code go here.

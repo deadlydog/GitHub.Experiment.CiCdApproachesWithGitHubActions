@@ -1,0 +1,41 @@
+name: 5-include-with-deploy-template--deploy
+
+on:
+  # Trigger the workflow on a push to the main branch.
+  push:
+    branches: main
+
+  # Allows you to run this workflow manually (for any branch) from the Actions tab.
+  workflow_dispatch:
+
+env:
+  # 👇 Set the artifact name that will be used by the build and deployments, so it is now only defined in one place.
+  artifactName: buildArtifact
+
+jobs:
+  # 👇 Call the build workflow to create the artifacts to deploy, and provide the artifact name.
+  build-and-test:
+    uses: ./.github/workflows/5-include-with-deploy-template--build.yml
+    with:
+      artifactName: ${{ env.artifactName }}
+    secrets: inherit # Pass secrets to the build workflow, if necessary.
+
+  deploy-to-staging:
+    # Only run this deploy job after the build-and-test job completes successfully.
+    needs: build-and-test
+    # 👇 Call the deploy template with the proper environemnt name to deploy the artifacts.
+    uses: ./.github/workflows/5-include-with-deploy-template--deploy-template.yml
+    with:
+      artifactName: ${{ env.artifactName }}
+      environmentName: staging
+    secrets: inherit # Pass repository secrets to the deployment workflow.
+
+  deploy-to-production:
+    # Only run this deploy job after the deploy-to-staging job completes successfully.
+    needs: deploy-to-staging
+    # 👇 Call the deploy template with the proper environemnt name to deploy the artifacts.
+    uses: ./.github/workflows/5-include-with-deploy-template--deploy-template.yml
+    with:
+      artifactName: ${{ env.artifactName }}
+      environmentName: production
+    secrets: inherit # Pass repository secrets to the deployment workflow.

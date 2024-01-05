@@ -9,13 +9,13 @@ on:
   workflow_dispatch:
 
 env:
-  artifactName: buildArtifact # This must match the artifact name in the 3-push--build workflow.
+  artifactName: buildArtifact # This must match the artifact name in the 4-include--build workflow.
 
 jobs:
   # 👇 Call the build workflow to create the artifacts to deploy.
   build-and-test:
     uses: ./.github/workflows/4-include--build.yml
-    secrets: inherit # Inherit secrets from the parent workflow, if necessary.
+    secrets: inherit # Pass secrets to the build workflow, if necessary.
 
   deploy-to-staging:
     # 👇 Only run this deploy job after the build-and-test job completes successfully.
