@@ -24,7 +24,7 @@ jobs:
     # Only run this deploy job after the build-and-test job completes successfully.
     needs: build-and-test
     # 👇 Call the deploy template with the proper environemnt name to deploy the artifacts.
-    uses: ./.github/workflows/templates/5-include-with-deploy-template--deploy-template.yml
+    uses: ./.github/workflows/5-include-with-deploy-template--deploy-template.yml
     with:
       artifactName: ${{ github.env.artifactName }}
       environmentName: staging
@@ -34,7 +34,7 @@ jobs:
     # Only run this deploy job after the deploy-to-staging job completes successfully.
     needs: deploy-to-staging
     # 👇 Call the deploy template with the proper environemnt name to deploy the artifacts.
-    uses: ./.github/workflows/templates/5-include-with-deploy-template--deploy-template.yml
+    uses: ./.github/workflows/5-include-with-deploy-template--deploy-template.yml
     with:
       artifactName: ${{ github.env.artifactName }}
       environmentName: production
