@@ -11,14 +11,17 @@ on:
   # Allows you to run this workflow manually from the Actions tab.
   workflow_dispatch:
 
-  # 👇 Allows this workflow to be called from the deployment workflow, and provide default values when not.
+  # 👇 Allows this workflow to be called from the deployment workflow, but the parameters must be provided.
   workflow_call:
     inputs:
       artifactName:
         description: The name of the artifact to upload to.
-        required: false
+        required: true
         type: string
-        default: buildArtifact # Provide a default value for when the workflow is not called from the deployment workflow.
+
+env:
+  # 👇 Provide a default artifact name for when this workflow is not called by the deployment workflow.
+  artifactName: ${{ inputs.artifactName || 'buildArtifact' }}
 
 jobs:
   build-and-test:
@@ -36,5 +39,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.artifactName }}
+          name: ${{ env.artifactName }}
           path: ./ # Put the path to the build artifact files directory here.
