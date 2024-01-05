@@ -9,4 +9,4 @@ if ($buildShouldSucceed -eq $false) {
 }
 Write-Output "Build succeeded."
 
-# Dummy change to trigger build. Another. Another.
+# Dummy change to trigger build.
